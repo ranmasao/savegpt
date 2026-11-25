@@ -21,6 +21,7 @@ const MESSAGES = {
   NO_TAB: 'No active tab.',
   NOT_CHATGPT: 'Not a ChatGPT tab. Open a conversation on chatgpt.com first.',
   NO_CONTENT_SCRIPT: 'Could not reach the page. Reload the ChatGPT tab and try again.',
+  MESSAGE_FAILED: 'Could not receive the conversation from the page.',
   NO_CONVERSATION: 'This conversation has no id yet. Send a message so it gets saved, then retry.',
   NOT_SIGNED_IN: 'Not signed in to ChatGPT, or the session expired. Reload the tab and try again.',
   FETCH_FAILED: 'ChatGPT rejected the request. The backend may have changed, or the session expired.',
@@ -49,25 +50,33 @@ function isChatGptUrl(url) {
  * extension was installed or reloaded, no content script is there yet - inject
  * it once and retry.
  */
-async function requestExtraction(tabId) {
+async function requestExtraction(tabId, includeRaw) {
+  const request = { type: 'SAVEGPT_EXTRACT', includeRaw };
   try {
-    return await chrome.tabs.sendMessage(tabId, { type: 'SAVEGPT_EXTRACT' });
-  } catch {
+    return await chrome.tabs.sendMessage(tabId, request);
+  } catch (error) {
+    if (!String(error.message || error).includes('Receiving end does not exist')) {
+      return { ok: false, code: 'MESSAGE_FAILED', message: error.message || String(error) };
+    }
     try {
       await chrome.scripting.executeScript({ target: { tabId }, files: ['src/content/content.js'] });
-      return await chrome.tabs.sendMessage(tabId, { type: 'SAVEGPT_EXTRACT' });
-    } catch {
-      return { ok: false, code: 'NO_CONTENT_SCRIPT' };
+    } catch (injectionError) {
+      return { ok: false, code: 'NO_CONTENT_SCRIPT', message: injectionError.message || String(injectionError) };
+    }
+    try {
+      return await chrome.tabs.sendMessage(tabId, request);
+    } catch (retryError) {
+      return { ok: false, code: 'MESSAGE_FAILED', message: retryError.message || String(retryError) };
     }
   }
 }
 
-async function extract() {
+async function extract(includeRaw = false) {
   const tab = await activeTab();
   if (!tab) throw new Error(MESSAGES.NO_TAB);
   if (!isChatGptUrl(tab.url)) throw new Error(MESSAGES.NOT_CHATGPT);
 
-  const response = await requestExtraction(tab.id);
+  const response = await requestExtraction(tab.id, includeRaw);
   if (!response || !response.ok) {
     const code = (response && response.code) || 'UNKNOWN';
     const detail = response && response.message ? `\n${response.message}` : '';
@@ -108,7 +117,7 @@ async function onSave() {
 async function onSaveJson(event) {
   event.preventDefault();
   await run(async () => {
-    const { conversation, raw } = await extract();
+    const { conversation, raw } = await extract(true);
     const filename = `${sanitizeStem(conversation.title)}-${toDateStamp(conversation.createTime)}.raw.json`;
     await saveText(filename, JSON.stringify(raw, null, 2), {
       saveAs: settings.saveAs,

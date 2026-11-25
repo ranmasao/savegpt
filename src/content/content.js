@@ -95,7 +95,7 @@
     return checkResponse(response);
   }
 
-  async function extract() {
+  async function extract(includeRaw) {
     const conversationId = conversationIdFromUrl();
     if (!conversationId) {
       throw new SaveGptError(
@@ -114,13 +114,13 @@
     if (conversation.messages.length === 0) {
       throw new SaveGptError('EMPTY', 'No exportable messages found in this conversation.');
     }
-    return { conversation, raw: payload };
+    return includeRaw ? { conversation, raw: payload } : { conversation };
   }
 
   chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     if (!request || request.type !== 'SAVEGPT_EXTRACT') return false;
 
-    extract()
+    extract(request.includeRaw === true)
       .then((result) => sendResponse({ ok: true, ...result }))
       .catch((error) =>
         sendResponse({
