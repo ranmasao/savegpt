@@ -28,8 +28,8 @@ If the tab was already open when the extension was installed or reloaded, the po
 injects the content script on demand; if that fails, reload the tab.
 
 A **Save raw JSON (debug)** link appears in the popup **only for an unpacked install**
-(`chrome.management.getSelf().installType === 'development'`). It writes the untouched
-backend payload next to the Markdown, which is what makes a bug report actionable. Users
+(`chrome.management.getSelf().installType === 'development'`). It writes backend data
+next to the Markdown. When the paginated API is used, message pages are combined. Users
 of a packed build never see it.
 
 ### Icon

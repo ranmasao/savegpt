@@ -62,26 +62,37 @@
 
   async function fetchConversation(id) {
     const { requestWithRetry } = await import(chrome.runtime.getURL('src/extract/request.js'));
-    const request = async (token) =>
-      fetch(`/backend-api/conversation/${id}`, {
+    const request = async (path, token) =>
+      fetch(path, {
         credentials: 'include',
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
 
-    let token = await getAccessToken(false);
-    let response = await requestWithRetry(() => request(token));
-    if (response.status === 401 || response.status === 403) {
-      // Tokens are short-lived; refresh once before giving up.
-      token = await getAccessToken(true);
-      response = await requestWithRetry(() => request(token));
+    async function getResponse(path) {
+      let token = await getAccessToken(false);
+      let response = await requestWithRetry(() => request(path, token));
+      if (response.status === 401 || response.status === 403) {
+        token = await getAccessToken(true);
+        response = await requestWithRetry(() => request(path, token));
+      }
+      return response;
     }
-    if (!response.ok) {
-      throw new SaveGptError(
-        response.status >= 500 ? 'SERVER_ERROR' : 'FETCH_FAILED',
-        `Conversation request failed (${response.status}${response.statusText ? ` ${response.statusText}` : ''}).`
-      );
+    function checkResponse(response) {
+      if (!response.ok) {
+        throw new SaveGptError(
+          response.status >= 500 ? 'SERVER_ERROR' : 'FETCH_FAILED',
+          `Conversation request failed (${response.status}${response.statusText ? ` ${response.statusText}` : ''}).`
+        );
+      }
+      return response.json();
     }
-    return response.json();
+
+    const response = await getResponse(`/backend-api/conversation/${id}`);
+    if (response.status >= 500) {
+      const { fetchPaginatedConversation } = await import(chrome.runtime.getURL('src/extract/pagination.js'));
+      return fetchPaginatedConversation(id, async (path) => checkResponse(await getResponse(path)));
+    }
+    return checkResponse(response);
   }
 
   async function extract() {

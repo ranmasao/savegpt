@@ -26,6 +26,9 @@ const TOOL_TYPES = new Set([
  * the user is looking at, and nothing else.
  */
 export function branchFromMapping(payload) {
+  if (Array.isArray(payload.messages)) {
+    return payload.messages.map((message) => ({ id: message.id, message }));
+  }
   const mapping = payload.mapping || {};
   const chain = [];
   const seen = new Set();
