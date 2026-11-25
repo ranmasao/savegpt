@@ -24,6 +24,7 @@ const MESSAGES = {
   NO_CONVERSATION: 'This conversation has no id yet. Send a message so it gets saved, then retry.',
   NOT_SIGNED_IN: 'Not signed in to ChatGPT, or the session expired. Reload the tab and try again.',
   FETCH_FAILED: 'ChatGPT rejected the request. The backend may have changed, or the session expired.',
+  SERVER_ERROR: 'ChatGPT returned a server error after retries. Try again later or try another conversation.',
   EMPTY: 'Nothing exportable found in this conversation.',
 };
 

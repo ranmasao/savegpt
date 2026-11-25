@@ -7,6 +7,6 @@
   "scripts": {
     "smoke": "node test/smoke.mjs",
     "payloads": "node test/payloads.mjs",
-    "test": "npm run smoke && npm run payloads"
+    "test": "npm run smoke && node test/request.mjs && npm run payloads"
   }
 }

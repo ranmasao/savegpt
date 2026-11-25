@@ -18,7 +18,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["src/extract/mapping.js"],
+      "resources": ["src/extract/mapping.js", "src/extract/request.js"],
       "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"]
     }
   ],

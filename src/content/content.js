@@ -61,21 +61,24 @@
   }
 
   async function fetchConversation(id) {
+    const { requestWithRetry } = await import(chrome.runtime.getURL('src/extract/request.js'));
     const request = async (token) =>
       fetch(`/backend-api/conversation/${id}`, {
         credentials: 'include',
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
 
-    let response = await request(await getAccessToken(false));
+    let token = await getAccessToken(false);
+    let response = await requestWithRetry(() => request(token));
     if (response.status === 401 || response.status === 403) {
       // Tokens are short-lived; refresh once before giving up.
-      response = await request(await getAccessToken(true));
+      token = await getAccessToken(true);
+      response = await requestWithRetry(() => request(token));
     }
     if (!response.ok) {
       throw new SaveGptError(
-        'FETCH_FAILED',
-        `Conversation request failed (${response.status} ${response.statusText}).`
+        response.status >= 500 ? 'SERVER_ERROR' : 'FETCH_FAILED',
+        `Conversation request failed (${response.status}${response.statusText ? ` ${response.statusText}` : ''}).`
       );
     }
     return response.json();
