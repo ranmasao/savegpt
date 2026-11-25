@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>SaveGPT</title>
+  <desc>A brain with a wide arrow pointing down, for saving a conversation to disk.</desc>
+
+  <!--
+    Drawn for legibility at 16px:
+    - the brain is wide and flat across the top, so it still reads as a mass at a
+      few pixels, and the arrow hangs below rather than crossing it (overlapping
+      turned the silhouette into a map pin);
+    - the gap between brain and arrow is transparent, not white, so the icon sits
+      correctly on both light and dark toolbars;
+    - both shapes are green, so nothing disappears against a dark background.
+  -->
+
+  <defs>
+    <mask id="gap">
+      <rect x="0" y="0" width="128" height="128" fill="#ffffff" />
+      <path d="M50 60 h28 v24 h20 L64 122 30 84 h20 z" fill="none" stroke="#000000" stroke-width="12" stroke-linejoin="round" />
+    </mask>
+  </defs>
+
+  <g mask="url(#gap)">
+    <g fill="#10a37f">
+      <!-- Main mass. -->
+      <ellipse cx="64" cy="46" rx="48" ry="30" />
+      <!-- Scalloped top, which is what separates a brain from a cloud. -->
+      <circle cx="34" cy="36" r="16" />
+      <circle cx="52" cy="28" r="18" />
+      <circle cx="76" cy="28" r="18" />
+      <circle cx="94" cy="36" r="16" />
+    </g>
+
+    <!-- Central fissure and folds. Detail for the large sizes only. -->
+    <g fill="none" stroke="#0a6e56" stroke-width="4.5" stroke-linecap="round" opacity="0.9">
+      <path d="M64 14 v30" />
+      <path d="M40 26 q9 9 2 19" />
+      <path d="M88 26 q-9 9 -2 19" />
+      <path d="M22 46 q14 2 18 12" />
+      <path d="M106 46 q-14 2 -18 12" />
+    </g>
+  </g>
+
+  <path d="M50 60 h28 v24 h20 L64 122 30 84 h20 z" fill="#0a6e56" />
+</svg>

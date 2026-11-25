@@ -1,0 +1,30 @@
+# Saved conversation payloads and exports. These are personal conversations -
+# the test suite reads them from a directory outside the repo (SAVEGPT_FIXTURES),
+# and nothing here should ever be committed by accident.
+*.raw.json
+/fixtures/
+/test/fixtures/
+
+# Packaging output for the Chrome Web Store.
+/dist/
+*.zip
+*.crx
+*.pem
+
+# Not used by this project - there are no dependencies - but keeps an accidental
+# `npm install` out of the tree.
+/node_modules/
+npm-debug.log*
+.npm/
+
+# Local tool state.
+.claude/settings.local.json
+
+# Editors and OS clutter.
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,12 @@
+{
+  "name": "savegpt",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension that saves a ChatGPT conversation as human- and agent-readable Markdown.",
+  "scripts": {
+    "smoke": "node test/smoke.mjs",
+    "payloads": "node test/payloads.mjs",
+    "test": "npm run smoke && npm run payloads"
+  }
+}

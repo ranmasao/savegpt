@@ -1,0 +1,112 @@
+:root {
+  color-scheme: light dark;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --accent: #10a37f;
+  --border: #d8d8d8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #ececec;
+    --muted: #9a9a9a;
+    --border: #3a3a3a;
+  }
+}
+
+body {
+  width: 260px;
+  margin: 0;
+  padding: 14px;
+  font: 13px/1.45 system-ui, sans-serif;
+  color: var(--fg);
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+button.primary {
+  width: 100%;
+  padding: 9px 12px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+fieldset {
+  margin: 12px 0 0;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+legend {
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+label {
+  display: block;
+  margin: 5px 0;
+}
+
+label.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* The format belongs to the checkbox above it, so it is indented under it. */
+label.nested {
+  margin: 2px 0 8px 20px;
+  color: var(--muted);
+}
+
+label.nested.disabled {
+  opacity: 0.5;
+}
+
+select {
+  font: inherit;
+  max-width: 140px;
+}
+
+.status {
+  min-height: 2.6em;
+  margin: 10px 0 0;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+.status.error {
+  color: #c0392b;
+}
+
+.status.ok {
+  color: var(--accent);
+}
+
+.debug {
+  margin: 4px 0 0;
+  font-size: 11px;
+}
+
+.debug a {
+  color: var(--muted);
+}

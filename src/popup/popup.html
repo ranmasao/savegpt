@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SaveGPT</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <h1>SaveGPT</h1>
+
+    <button id="save" type="button" class="primary">Save as Markdown</button>
+
+    <fieldset>
+      <legend>Options</legend>
+
+      <label title="Show the time each message was sent, in the heading above it. The machine-readable timestamp on every message is always written regardless.">
+        <input type="checkbox" id="timestamps" /> Timestamps
+      </label>
+      <label class="row nested" title="How the timestamp is written in the heading. Does not affect the machine-readable one, which is always full ISO-8601.">
+        <span>Format</span>
+        <select id="timestampFormat">
+          <option value="datetime">2026-08-09 14:02</option>
+          <option value="time">14:02</option>
+          <option value="iso">ISO 8601</option>
+          <option value="relative">+04:31 from start</option>
+        </select>
+      </label>
+
+      <label title="Add a YAML block at the top of the file with the title, source URL, dates and model. Obsidian and similar tools read it as note properties; two technical keys are always written even when this is off, because the file needs them to stay machine-readable.">
+        <input type="checkbox" id="frontmatter" /> Front matter
+      </label>
+
+      <label title="Rewrite \( \) and \[ \] to $ and $$ so formulas render in GitHub, Obsidian and VS Code. Code blocks and inline code are left untouched. Off by default, since it is the only option that edits the text of a message.">
+        <input type="checkbox" id="convertMath" /> Convert math to $ / $$
+      </label>
+
+      <label title="Open the browser's Save As dialog instead of saving straight to your downloads folder.">
+        <input type="checkbox" id="saveAs" /> Ask where to save
+      </label>
+    </fieldset>
+
+    <p id="status" class="status" role="status"></p>
+
+    <p class="debug" id="debugRow" hidden>
+      <a href="#" id="saveJson" title="Save the untouched backend payload next to the Markdown. Useful for reporting a bug: it shows what the exporter had to work with.">Save raw JSON (debug)</a>
+    </p>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
